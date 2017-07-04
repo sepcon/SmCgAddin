@@ -1,0 +1,22 @@
+noCondition
+noAction
+EV_USER
+\t\tINTERNAL({0}, {1}, {2})\n
+\t\tENTRY({0})\n
+\t\tEXIT({0})\n
+\t\tDEFAULT({0})\n
+\t\tTRANSITION({0}, {1}, {2}, {3})\n
+\tSTATE_BEGIN({0}, {1})\n\t//define state transition table of {0}\n{2}\tSTATE_END // {0}\n\n
+\tROOT_STATE_BEGIN({0})\n\t//define root state table\n{1}\tROOT_STATE_END\n\n
+void {0} (unsigned int DeviceId)
+boolean {0} (unsigned int DeviceId)
+{0}_State_Act_Function_{1}
+{0}_State_Cond_Check{1}
+{0}_State_{1}_Function_{2}
+HSM_BEGIN({0}) \n {1} \nHSM_END({0})\n
+typedef enum \n{{\n{1}}} {0}_Event;\n
+\n/**\n ***************************************************************************************************\n * \fn {0}\n * \brief \n *\n * \param [unsigned int] - DeviceId\n *\n * \return {1}\n **************************************************************************************************/\n{0}\n{{\n    {2}\n}}\n\n
+\n\t//TBD\n\t//{0}\n    return FALSE;\n
+\n\t//TBD\n\t//{0}\n
+/**\n* @swcomponent {0}\n* @{{\n* @file        {1}\n* @brief       Implementation of State Machine Public APIs.\n* @copyright   (C) 2017 Robert Bosch GmbH.\n*              The reproduction, distribution and utilization of this file as\n*              well as the communication of its contents to others without express\n*              authorization is prohibited. Offenders will be held liable for the\n*              payment of damages. All rights reserved in the event of the grant\n*              of a patent, utility model or design.\n* @}}\n*/\n#ifndef {2}\n#define {2}\n\n#include "hsm.h"\n\n\n{3}\n\n\n//global functions\nvoid {0}_States_Init(void);\nvoid {0}_States_Deinit(void);\nvoid {0}_States_Start(void);\nvoid {0}_States_OnEvent(unsigned int event);\n\n#endif // {2}\n\n#include "hsm_gen.h"        // state machine framework\n/* -------------------------------------------------------------------- */\n/* |---------------STATE MACHINE SPECIFICATION -----------------------| */\n#ifndef IGNORE_TABLE_DEFINE\n{4}\n#endif\n
+\n#include "{1}"\n\n#define HSM_TRANSITION_LIST\n#include "{1}"\n\n#define HSM_TRANSITION_TABLE\n#include "{1}"\n\n#define HSM_STATE_LIST\n#include "{1}"\n\n#define HSM_STATE_TABLE\n#include "{1}"\n\n\n//local variables\nstatic Hsm   _stateMachine;\n\n\n//global functions\nvoid {0}_States_Init(void)\n{{\n\tHsm_create(&_stateMachine, &{0}StateTable, 0);\n\t//TBD\n}}\n\nvoid {0}_States_Deinit(void)\n{{\n\tHsm_stop(&_stateMachine);\n\t//TBD\n}}\n\nvoid {0}_States_Start(void)\n{{\n\tHsm_start(&_stateMachine);\n\t//TBD\n}}\n\nvoid {0}_States_OnEvent(unsigned int event)\n{{\n\tHsm_onEvent(&_stateMachine, (Event)event);\n\t//TBD\n}}\n\n{2}\n\n

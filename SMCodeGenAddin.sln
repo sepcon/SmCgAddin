@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMCodeGenAddin", "SMCodeGenAddin\SMCodeGenAddin.csproj", "{5B0F19A1-163D-421A-949B-A34A363B1B70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{E9ACFB77-7069-4C8F-9E6B-6B8D3E7178A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{0EFFB87B-CEAD-4941-BF51-C8CE786D0300}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B0F19A1-163D-421A-949B-A34A363B1B70} = {5B0F19A1-163D-421A-949B-A34A363B1B70}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A98A5CE3-00AD-4BFF-9BAA-2CD802C592B3}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
+		Performance2.psess = Performance2.psess
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B0F19A1-163D-421A-949B-A34A363B1B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B0F19A1-163D-421A-949B-A34A363B1B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B0F19A1-163D-421A-949B-A34A363B1B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B0F19A1-163D-421A-949B-A34A363B1B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9ACFB77-7069-4C8F-9E6B-6B8D3E7178A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9ACFB77-7069-4C8F-9E6B-6B8D3E7178A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9ACFB77-7069-4C8F-9E6B-6B8D3E7178A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9ACFB77-7069-4C8F-9E6B-6B8D3E7178A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EFFB87B-CEAD-4941-BF51-C8CE786D0300}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EFFB87B-CEAD-4941-BF51-C8CE786D0300}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EFFB87B-CEAD-4941-BF51-C8CE786D0300}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EFFB87B-CEAD-4941-BF51-C8CE786D0300}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
+EndGlobal

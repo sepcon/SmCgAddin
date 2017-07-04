@@ -1,0 +1,9 @@
+[ERROR]: please open or select a diagram in project browser window
+[ERROR]: connector from state node [{0}] to choice node [{1}] is not permited to not contain trigger events
+[ERROR]: connector from state node [{0}] to choice node [{1}] must not have condition or action, just only trigger events, currently contains CONDITION|ACTIONS:[{2}]
+[ERROR]: connector from choice node [{0}] to state node [{1}] is not permited to miss conditions(guard)
+[ERROR]: connector from choice node [{0}] to state node [{1}] must not contain events,  just only condition or action, currently contains EVENTS: [{2}]
+[ERROR]: From choice node [{0}] to node [{1}], [{1}] must be a State node
+[RESULT]: Generating Code for {0} Successful!\nResult:\n\t++{1}\n\t++{2}
+[RESULT]: Failed!
+Summary:\n++Errors: {0} Errors, \n++Warnings: {1} Warnings\n\nError list: \n{2}\nWarning list:\n{3}
