@@ -2,11 +2,7 @@ import re
 from sets import Set
 import sys
 import glob
-
-
-
-MAKEFILE_PATH_KEY = '-m'
-QMAKE_DIR_KEY = '-qm'
+import argparse
 
 QMAKE_FILE_EXTENSION = ".pro"
 QMAKE_FILE_TEMPLATE = 'TEMPLATE = app\nCONFIG += console c++11\nCONFIG -= app_bundle \nCONFIG -= qt\n\n\n'
@@ -15,34 +11,6 @@ QMAKE_SOURCE_KEYWORD = "SOURCES += \\\n"
 HEADER = "HEADERS += \\\n"
 
 
-def printHelp():
-    print '''
-    -----------------------------------USAGE--------------------------------------------
-    SYNTAX: python qmake_from_make.py -m <path_to_makefile> [-qm <path_to_qmake_output>]
-    ------------------------------------------------------------------------------------
-    '''
-def checkArguments(argumentsMap):
-    if not argumentsMap.has_key(MAKEFILE_PATH_KEY):
-        print '\nplease specify the path of makefile'
-        return False
-
-    if not argumentsMap.has_key(QMAKE_DIR_KEY):
-        argumentsMap[QMAKE_DIR_KEY] = '.'
-
-    return True
-
-def parseArguments():
-    argumentsMap = {}
-    argc = len(sys.argv)
-    if argc > 1:
-        i = 1
-        while i < argc:
-            if sys.argv[i][0] == '-':
-                argumentsMap[sys.argv[i]] = sys.argv[i + 1]
-                i = i + 2
-            else:
-                i = i + 1
-    return argumentsMap
 
 def getFileNameFromPath(filePath):
     indexOfSlash = filePath.rfind('/')
@@ -60,20 +28,21 @@ def getContainingDir(filePath):
 
 
 
-argumentsMap = parseArguments()
-if checkArguments(argumentsMap) != True:
-    printHelp()
-    exit(-1)
-
-
-
-
-
 includePathsList = None
 cppFilesList = Set()
 headerFilesList = Set()
 
-makefile = open(argumentsMap[MAKEFILE_PATH_KEY], 'r')
+argParser = argparse.ArgumentParser('python qmake_from_make.py',
+                                    description = '\n\n\tSimply conversion from makefile to qmake file for investigating source code with qtcreator')
+argParser.add_argument('make_file_path',
+                       help = 'path to make file that wanted to convert to qmake')
+argParser.add_argument('-qm', '--qmake_out_dir', default = '.',
+                       help = 'directory for storing qmake file output')
+argParser.add_argument('-v', "--verbose", help = 'more details about output', action = 'store_true')
+
+args = argParser.parse_args()
+
+makefile = open(args.make_file_path, 'r')
 makeContent = makefile.readlines()
 
 
@@ -99,20 +68,37 @@ for cppFile in cppFilesList:
 
 makefile.close()
 
-qmakeFilePath = argumentsMap[QMAKE_DIR_KEY] + '/' + getFileNameFromPath(argumentsMap[MAKEFILE_PATH_KEY]) + '.pro'
+qmakeFilePath = args.qmake_out_dir + '/' + getFileNameFromPath(args.make_file_path) + '.pro'
 qmakeFile = open( qmakeFilePath, 'w')
 qmakeFile.write(QMAKE_FILE_TEMPLATE);
+
+#############################
+# write include path section#
+#############################
 if includePathsList :
     qmakeFile.write(QMAKE_INCLUDEPATH_KEYWORD )
     qmakeFile.write(includePathsList + '\n')
     qmakeFile.write("\n\n")
+#############################
+# write srouce files section#
+#############################
+if len(cppFilesList) > 0:
+    qmakeFile.write(QMAKE_SOURCE_KEYWORD)
+    qmakeFile.writelines(cppFilesList)
+    qmakeFile.write("\n\n")
 
-qmakeFile.write(QMAKE_SOURCE_KEYWORD)
-qmakeFile.writelines(cppFilesList)
-
-qmakeFile.write("\n\n")
-
-qmakeFile.write(HEADER)
-qmakeFile.writelines(headerFilesList)
+############################
+# write header file section#
+############################
+if len(headerFilesList) > 0:
+    qmakeFile.write(HEADER)
+    qmakeFile.writelines(headerFilesList)
+    qmakeFile.write("\n\n")
 
 qmakeFile.close()
+if args.verbose:
+    print '''
+    Conversion succesful!
+    OUTPUT: {}
+    please open the file with qtcreator for using it!
+    '''.format(qmakeFilePath)
