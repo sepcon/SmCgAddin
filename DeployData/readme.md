@@ -37,4 +37,4 @@ Currently, the addin was implement for generating code from State Chart in enter
 -- each line is corresponding to a format (functions, transition table, hsm table and source/header file format...)
 -- you can take a line to modify it by copy the line to other file and replace "\n" with new line character in your editor. After modifying, you should revert the new line character with "\n" and paste exactly to line number that you took the line previously. --> make sure that you must not remove the "{0}", "{1}" ,"{n}" away, they are placeholder to insert infos collected from the diagram. If not, the program will crash.
 -- you can find the meaning of each format on each line by matching the line number with corresponding enum in DataFormat.cs.
-if you want to add new lines to format file you should add new corresponding values to the enum and vice versa.
+if you want to add new lines to format file you should add new corresponding values to the enum and vice versa. :)
