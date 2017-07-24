@@ -1,0 +1,3 @@
+[submodule "StateMachineLib"]
+	path = StateMachineLib
+	url = https://github.com/sepcon/StateMachineLib.git
