@@ -15,6 +15,20 @@ static bool executeCommand(const std::string& cmd)
 namespace sds {
 namespace adapter {
 
+class ILogWriter
+{
+public:
+   virtual bool log(const std::string& /*trace*/) { return true; }
+   virtual void setLogFile(const std::string& /*logFile*/) {}
+   virtual bool clearLog() { return true; }
+   virtual ~ILogWriter() {}
+};
+
+class LogWriterFactory
+{
+public:
+   static ILogWriter* createLogWriter(enLogWriterType writerType);
+};
 
 
 clStartupLogger &clStartupLogger::getInstance()
@@ -52,129 +66,6 @@ clStartupLogger::clStartupLogger(const std::string &logFile) : _logFile(logFile)
    _logWriter = LogWriterFactory::createLogWriter(enLWT_SystemEcho);
    _logWriter->setLogFile(_logFile);
    _logWriter->clearLog();
-
-   gFunctionMap[0x100] = "COMMONSTARTSESSION";
-   gFunctionMap[0x101] = "COMMONSTOPSESSION";
-   gFunctionMap[0x102] = "COMMONSHOWDIALOG";
-   gFunctionMap[0x103] = "COMMONSELECTLISTELEMENT";
-   gFunctionMap[0x104] = "COMMONGETLISTELEMENT";
-   gFunctionMap[0x105] = "COMMONSETACTIVEAPPLICATION";
-   gFunctionMap[0x106] = "COMMONSETAVAILABLESPEAKERS";
-   gFunctionMap[0x107] = "COMMONSETAVAILABLEUSERWORDS";
-   gFunctionMap[0x108] = "COMMONINTERACTIONLOGGER";
-   gFunctionMap[0x109] = "COMMONSETTINGS";
-   gFunctionMap[0x10A] = "COMMONGETLISTINFO";
-   gFunctionMap[0x200] = "TUNERSELECTSTATION";
-   gFunctionMap[0x201] = "TUNERSELECTBAND_MEMBANK";
-   gFunctionMap[0x202] = "TUNERAUTOSTORE";
-   gFunctionMap[0x203] = "TUNERSETSETTING";
-   gFunctionMap[0x204] = "TUNERSTORESTATION";
-   gFunctionMap[0x205] = "TUNERSHOWSTATIONLIST";
-   gFunctionMap[0x206] = "TUNERGETLISTENTRIES";
-   gFunctionMap[0x207] = "TUNERGETDATABASES";
-   gFunctionMap[0x208] = "TUNERGETAMBIGUITYLIST";
-   gFunctionMap[0x401] = "PHONESELECTPHONE";
-   gFunctionMap[0x402] = "PHONESTARTPAIRING";
-   gFunctionMap[0x403] = "PHONEDIALNUMBER";
-   gFunctionMap[0x404] = "PHONEREDIALLASTNUMBER";
-   gFunctionMap[0x405] = "PHONEGETCONTACTLISTENTRIES";
-   gFunctionMap[0x406] = "PHONESTORENUMBER";
-   gFunctionMap[0x407] = "PHONEDELETENUMBER";
-   gFunctionMap[0x408] = "PHONESETPHONESETTING";
-   gFunctionMap[0x409] = "PHONEDIALVOICEMAIL";
-   gFunctionMap[0x40A] = "PHONEGETDATABASES";
-   gFunctionMap[0x40B] = "PHONEDIALCONTACT";
-   gFunctionMap[0x40C] = "PHONESHOWMENU";
-   gFunctionMap[0x40D] = "PHONESENDDTMFDIGITS";
-   gFunctionMap[0x40E] = "PHONESWITCHCALL";
-   gFunctionMap[0x40F] = "PHONESETCONTACT";
-   gFunctionMap[0x410] = "PHONEGETNUMBERINFO";
-   gFunctionMap[0x501] = "MEDIAPLAY";
-   gFunctionMap[0x502] = "MEDIAGETDATABASE";
-   gFunctionMap[0x503] = "MEDIAGETAMBIGUITYLIST";
-   gFunctionMap[0x504] = "MEDIAGETDEVICEINFO";
-   gFunctionMap[0x601] = "NAVISTARTGUIDANCE";
-   gFunctionMap[0x602] = "NAVISTOPGUIDANCE";
-   gFunctionMap[0x603] = "NAVISETZOOMSETTING";
-   gFunctionMap[0x604] = "NAVIGETROUTECRITERIA";
-   gFunctionMap[0x605] = "NAVISETROUTECRITERIA";
-   gFunctionMap[0x606] = "NAVISETNAVSETTING";
-   gFunctionMap[0x607] = "NAVISHOWNAVMENU";
-   gFunctionMap[0x608] = "NAVISETMAPMODE";
-   gFunctionMap[0x609] = "NAVIGETMAPMODE";
-   gFunctionMap[0x60A] = "NAVIGETCONTACTLISTENTRIES";
-   gFunctionMap[0x60B] = "NAVISELECTDESTLISTENTRY";
-   gFunctionMap[0x60C] = "NAVISTOREDESTINATION";
-   gFunctionMap[0x60D] = "NAVIDELETEDESTINATION";
-   gFunctionMap[0x60E] = "NAVINEWDESTINATION";
-   gFunctionMap[0x60F] = "NAVIGETCURRENTDESTINATION";
-   gFunctionMap[0x610] = "NAVISETDESTINATIONITEM";
-   gFunctionMap[0x611] = "NAVIGETAMBIGUITYLIST";
-   gFunctionMap[0x614] = "NAVISHOWTMCLIST";
-   gFunctionMap[0x615] = "NAVISHOWPOILIST";
-   gFunctionMap[0x616] = "NAVIGETPOICATEGORIES";
-   gFunctionMap[0x617] = "NAVIGETTMCLISTENTRIES";
-   gFunctionMap[0x618] = "NAVISELECTTMCLISTENTRY";
-   gFunctionMap[0x619] = "NAVISETDESTINATIONCONTACT";
-   gFunctionMap[0x61A] = "NAVISETDESTINATIONASWAYPOINT";
-   gFunctionMap[0x61B] = "NAVIGETHOUSENUMBERRANGE";
-   gFunctionMap[0x61C] = "NAVIGETWAYPOINTLISTINFO";
-   gFunctionMap[0x61D] = "NAVISTARTLOCATIONSEARCH";
-   gFunctionMap[0x701] = "WEATHERSETCONTACT";
-   gFunctionMap[0x702] = "WEATHERSETLOCATION";
-   gFunctionMap[0x801] = "TEXTMSGGETINFO";
-   gFunctionMap[0x802] = "TEXTMSGCALLBACKSENDER";
-   gFunctionMap[0x803] = "TEXTMSGSETCONTENT";
-   gFunctionMap[0x804] = "TEXTMSGSETNUMBER";
-   gFunctionMap[0x805] = "TEXTMSGSEND";
-   gFunctionMap[0x806] = "TEXTMSGSELECTMESSAGE";
-   gFunctionMap[0x901] = "CONTACTSGETAMBIGUITYLIST";
-   gFunctionMap[0xA00] = "INFOSHOWMENU";
-   gFunctionMap[0xA01] = "VDLGETDATABASES";
-   gFunctionMap[0xA02] = "APPSLAUNCHAPPLICATION";
-   gFunctionMap[0xA03] = "COMMONSETDYNACCESSINFO";
-   gFunctionMap[0xA04] = "NAVIGETNEARBYSTATES";
-   gFunctionMap[0xA05] = "COMMONGETHMIELEMENTDESCRIPTION";
-   gFunctionMap[0xA06] = "NAVIREPEATINSTRUCTION";
-   gFunctionMap[0xA07] = "TEXTMSGGETCONTENT";
-   gFunctionMap[0xA08] = "COMMONGETHMILISTDESCRIPTION";
-   gFunctionMap[0xA09] = "PHONEUPDATEPHONEBOOK";
-   gFunctionMap[0xA0A] = "NAVIGETSEARCHLOCATION";
-   gFunctionMap[0xA0B] = "COMMONSETSDSEVENT";
-   gFunctionMap[0xA0C] = "TVSELECTSTATION";
-   gFunctionMap[0xA0D] = "NAVDATAGETSTREETAVAILABILITY";
-   gFunctionMap[0xA0E] = "NAVDATAGETSTRINGANDPHONEME";
-   gFunctionMap[0xA0F] = "NAVDATAREGISTERDIRECTNDSUSE";
-   gFunctionMap[0xA10] = "NAVDATAUNREGISTERDIRECTNDSUSE";
-   gFunctionMap[0xA11] = "NAVDATAGETCOUNTRYSTATELIST";
-   gFunctionMap[0xA12] = "PHONEGETPHONENUMBERFORMATTED";
-   gFunctionMap[0xA13] = "COMMONRESTOREHMILIST";
-   gFunctionMap[0xA14] = "INFOSHOWSERVICEADVISORY";
-   gFunctionMap[0xA15] = "NAVISTARTDISTANCEDETOUR";
-   gFunctionMap[0x0001] = "SDS_STATUS";
-   gFunctionMap[0x0002] = "SDS_ACTIVESPEAKER";
-   gFunctionMap[0x0003] = "COMMONACTIONREQUEST";
-   gFunctionMap[0x0004] = "COMMONSTATUS";
-   gFunctionMap[0x0006] = "MEDIASTATUS";
-   gFunctionMap[0x0007] = "NAVISTATUS";
-   gFunctionMap[0x0008] = "PHONESTATUS";
-   gFunctionMap[0x0009] = "TUNERSTATUS";
-   gFunctionMap[0x000A] = "WEATHERSTATUS";
-   gFunctionMap[0x000B] = "NAVICURRENTCOUNTRYSTATE";
-   gFunctionMap[0x000C] = "COMMONSETTINGSREQUEST";
-   gFunctionMap[0x000D] = "TEXTMSGSTATUS";
-   gFunctionMap[0x000E] = "VDLSTATUS";
-   gFunctionMap[0x000F] = "CONNECTEDDEVICESTATUS";
-   gFunctionMap[0x0010] = "NAVICURRENTNEIGHBORINGLOCATION";
-   gFunctionMap[0x0011] = "SPECIALAPPSTATUS";
-   gFunctionMap[0x0012] = "COMMONSDSCONFIGURATION_STAT";
-   gFunctionMap[0x0013] = "COMMONSDSCONFIGURATION_DYNA";
-   gFunctionMap[0x0014] = "COMMONCORESPEECHPARAMETERS";
-   gFunctionMap[0x0015] = "NAVDATAACTIVEDATASET";
-   gFunctionMap[0x0016] = "AUDIOECNR_ASR_MODE_STATUS";
-   gFunctionMap[0x0017] = "AUDIO_ECNR_ENGINEPARAMETER";
-   gFunctionMap[0x0018] = "INFOSERVICESTATUS";
-   gFunctionMap[0xFFFF] = "INVALID_FUNCTIONID";
 }
 
 void clStartupLogger::writeLog()
@@ -200,8 +91,6 @@ std::string getFunctionName(unsigned int functionCode)
 
 
 /// START - Declaration: Private classes for log writing
-
-
 class SystemEchoLogWriter : public ILogWriter
 {
 
@@ -301,4 +190,142 @@ ILogWriter *LogWriterFactory::createLogWriter(enLogWriterType writerType)
 }
 
 }
+}
+
+std::string getFunctionName(unsigned int funcCode)
+{
+   if(gFunctionMap.empty())
+   {
+      gFunctionMap[0x100] = "COMMONSTARTSESSION";
+      gFunctionMap[0x101] = "COMMONSTOPSESSION";
+      gFunctionMap[0x102] = "COMMONSHOWDIALOG";
+      gFunctionMap[0x103] = "COMMONSELECTLISTELEMENT";
+      gFunctionMap[0x104] = "COMMONGETLISTELEMENT";
+      gFunctionMap[0x105] = "COMMONSETACTIVEAPPLICATION";
+      gFunctionMap[0x106] = "COMMONSETAVAILABLESPEAKERS";
+      gFunctionMap[0x107] = "COMMONSETAVAILABLEUSERWORDS";
+      gFunctionMap[0x108] = "COMMONINTERACTIONLOGGER";
+      gFunctionMap[0x109] = "COMMONSETTINGS";
+      gFunctionMap[0x10A] = "COMMONGETLISTINFO";
+      gFunctionMap[0x200] = "TUNERSELECTSTATION";
+      gFunctionMap[0x201] = "TUNERSELECTBAND_MEMBANK";
+      gFunctionMap[0x202] = "TUNERAUTOSTORE";
+      gFunctionMap[0x203] = "TUNERSETSETTING";
+      gFunctionMap[0x204] = "TUNERSTORESTATION";
+      gFunctionMap[0x205] = "TUNERSHOWSTATIONLIST";
+      gFunctionMap[0x206] = "TUNERGETLISTENTRIES";
+      gFunctionMap[0x207] = "TUNERGETDATABASES";
+      gFunctionMap[0x208] = "TUNERGETAMBIGUITYLIST";
+      gFunctionMap[0x401] = "PHONESELECTPHONE";
+      gFunctionMap[0x402] = "PHONESTARTPAIRING";
+      gFunctionMap[0x403] = "PHONEDIALNUMBER";
+      gFunctionMap[0x404] = "PHONEREDIALLASTNUMBER";
+      gFunctionMap[0x405] = "PHONEGETCONTACTLISTENTRIES";
+      gFunctionMap[0x406] = "PHONESTORENUMBER";
+      gFunctionMap[0x407] = "PHONEDELETENUMBER";
+      gFunctionMap[0x408] = "PHONESETPHONESETTING";
+      gFunctionMap[0x409] = "PHONEDIALVOICEMAIL";
+      gFunctionMap[0x40A] = "PHONEGETDATABASES";
+      gFunctionMap[0x40B] = "PHONEDIALCONTACT";
+      gFunctionMap[0x40C] = "PHONESHOWMENU";
+      gFunctionMap[0x40D] = "PHONESENDDTMFDIGITS";
+      gFunctionMap[0x40E] = "PHONESWITCHCALL";
+      gFunctionMap[0x40F] = "PHONESETCONTACT";
+      gFunctionMap[0x410] = "PHONEGETNUMBERINFO";
+      gFunctionMap[0x501] = "MEDIAPLAY";
+      gFunctionMap[0x502] = "MEDIAGETDATABASE";
+      gFunctionMap[0x503] = "MEDIAGETAMBIGUITYLIST";
+      gFunctionMap[0x504] = "MEDIAGETDEVICEINFO";
+      gFunctionMap[0x601] = "NAVISTARTGUIDANCE";
+      gFunctionMap[0x602] = "NAVISTOPGUIDANCE";
+      gFunctionMap[0x603] = "NAVISETZOOMSETTING";
+      gFunctionMap[0x604] = "NAVIGETROUTECRITERIA";
+      gFunctionMap[0x605] = "NAVISETROUTECRITERIA";
+      gFunctionMap[0x606] = "NAVISETNAVSETTING";
+      gFunctionMap[0x607] = "NAVISHOWNAVMENU";
+      gFunctionMap[0x608] = "NAVISETMAPMODE";
+      gFunctionMap[0x609] = "NAVIGETMAPMODE";
+      gFunctionMap[0x60A] = "NAVIGETCONTACTLISTENTRIES";
+      gFunctionMap[0x60B] = "NAVISELECTDESTLISTENTRY";
+      gFunctionMap[0x60C] = "NAVISTOREDESTINATION";
+      gFunctionMap[0x60D] = "NAVIDELETEDESTINATION";
+      gFunctionMap[0x60E] = "NAVINEWDESTINATION";
+      gFunctionMap[0x60F] = "NAVIGETCURRENTDESTINATION";
+      gFunctionMap[0x610] = "NAVISETDESTINATIONITEM";
+      gFunctionMap[0x611] = "NAVIGETAMBIGUITYLIST";
+      gFunctionMap[0x614] = "NAVISHOWTMCLIST";
+      gFunctionMap[0x615] = "NAVISHOWPOILIST";
+      gFunctionMap[0x616] = "NAVIGETPOICATEGORIES";
+      gFunctionMap[0x617] = "NAVIGETTMCLISTENTRIES";
+      gFunctionMap[0x618] = "NAVISELECTTMCLISTENTRY";
+      gFunctionMap[0x619] = "NAVISETDESTINATIONCONTACT";
+      gFunctionMap[0x61A] = "NAVISETDESTINATIONASWAYPOINT";
+      gFunctionMap[0x61B] = "NAVIGETHOUSENUMBERRANGE";
+      gFunctionMap[0x61C] = "NAVIGETWAYPOINTLISTINFO";
+      gFunctionMap[0x61D] = "NAVISTARTLOCATIONSEARCH";
+      gFunctionMap[0x701] = "WEATHERSETCONTACT";
+      gFunctionMap[0x702] = "WEATHERSETLOCATION";
+      gFunctionMap[0x801] = "TEXTMSGGETINFO";
+      gFunctionMap[0x802] = "TEXTMSGCALLBACKSENDER";
+      gFunctionMap[0x803] = "TEXTMSGSETCONTENT";
+      gFunctionMap[0x804] = "TEXTMSGSETNUMBER";
+      gFunctionMap[0x805] = "TEXTMSGSEND";
+      gFunctionMap[0x806] = "TEXTMSGSELECTMESSAGE";
+      gFunctionMap[0x901] = "CONTACTSGETAMBIGUITYLIST";
+      gFunctionMap[0xA00] = "INFOSHOWMENU";
+      gFunctionMap[0xA01] = "VDLGETDATABASES";
+      gFunctionMap[0xA02] = "APPSLAUNCHAPPLICATION";
+      gFunctionMap[0xA03] = "COMMONSETDYNACCESSINFO";
+      gFunctionMap[0xA04] = "NAVIGETNEARBYSTATES";
+      gFunctionMap[0xA05] = "COMMONGETHMIELEMENTDESCRIPTION";
+      gFunctionMap[0xA06] = "NAVIREPEATINSTRUCTION";
+      gFunctionMap[0xA07] = "TEXTMSGGETCONTENT";
+      gFunctionMap[0xA08] = "COMMONGETHMILISTDESCRIPTION";
+      gFunctionMap[0xA09] = "PHONEUPDATEPHONEBOOK";
+      gFunctionMap[0xA0A] = "NAVIGETSEARCHLOCATION";
+      gFunctionMap[0xA0B] = "COMMONSETSDSEVENT";
+      gFunctionMap[0xA0C] = "TVSELECTSTATION";
+      gFunctionMap[0xA0D] = "NAVDATAGETSTREETAVAILABILITY";
+      gFunctionMap[0xA0E] = "NAVDATAGETSTRINGANDPHONEME";
+      gFunctionMap[0xA0F] = "NAVDATAREGISTERDIRECTNDSUSE";
+      gFunctionMap[0xA10] = "NAVDATAUNREGISTERDIRECTNDSUSE";
+      gFunctionMap[0xA11] = "NAVDATAGETCOUNTRYSTATELIST";
+      gFunctionMap[0xA12] = "PHONEGETPHONENUMBERFORMATTED";
+      gFunctionMap[0xA13] = "COMMONRESTOREHMILIST";
+      gFunctionMap[0xA14] = "INFOSHOWSERVICEADVISORY";
+      gFunctionMap[0xA15] = "NAVISTARTDISTANCEDETOUR";
+      gFunctionMap[0x0001] = "SDS_STATUS";
+      gFunctionMap[0x0002] = "SDS_ACTIVESPEAKER";
+      gFunctionMap[0x0003] = "COMMONACTIONREQUEST";
+      gFunctionMap[0x0004] = "COMMONSTATUS";
+      gFunctionMap[0x0006] = "MEDIASTATUS";
+      gFunctionMap[0x0007] = "NAVISTATUS";
+      gFunctionMap[0x0008] = "PHONESTATUS";
+      gFunctionMap[0x0009] = "TUNERSTATUS";
+      gFunctionMap[0x000A] = "WEATHERSTATUS";
+      gFunctionMap[0x000B] = "NAVICURRENTCOUNTRYSTATE";
+      gFunctionMap[0x000C] = "COMMONSETTINGSREQUEST";
+      gFunctionMap[0x000D] = "TEXTMSGSTATUS";
+      gFunctionMap[0x000E] = "VDLSTATUS";
+      gFunctionMap[0x000F] = "CONNECTEDDEVICESTATUS";
+      gFunctionMap[0x0010] = "NAVICURRENTNEIGHBORINGLOCATION";
+      gFunctionMap[0x0011] = "SPECIALAPPSTATUS";
+      gFunctionMap[0x0012] = "COMMONSDSCONFIGURATION_STAT";
+      gFunctionMap[0x0013] = "COMMONSDSCONFIGURATION_DYNA";
+      gFunctionMap[0x0014] = "COMMONCORESPEECHPARAMETERS";
+      gFunctionMap[0x0015] = "NAVDATAACTIVEDATASET";
+      gFunctionMap[0x0016] = "AUDIOECNR_ASR_MODE_STATUS";
+      gFunctionMap[0x0017] = "AUDIO_ECNR_ENGINEPARAMETER";
+      gFunctionMap[0x0018] = "INFOSERVICESTATUS";
+      gFunctionMap[0xFFFF] = "INVALID_FUNCTIONID";
+   }
+   std::map<unsigned int, std::string>::iterator it = gFunctionMap.find(funcCode);
+   if(it != gFunctionMap.end())
+   {
+      return it->second;
+   }
+   else
+   {
+      return "INVALID_FUNCTIONID";
+   }
 }

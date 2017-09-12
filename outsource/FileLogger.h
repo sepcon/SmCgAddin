@@ -14,7 +14,7 @@
 #else
 #define SDS_LOGGER()
 #define SDS_CCA_FUNC_NAME(funcCode)
-#define SDS_ENDLOG '\n'
+#define SDS_ENDLOG
 #define ENDLOG SDS_ENDLOG
 #endif //STARTUP_TRACES_ENABLE
 
@@ -30,6 +30,7 @@ enum enLogWriterType
    enLWT_Null
 };
 
+std::string getFunctionName(unsigned int funcCode);
 class clStartupLogger
 {
 public:
@@ -52,21 +53,6 @@ protected:
    std::string _logFile;
    ILogWriter* _logWriter;
    std::ostringstream _traceCreator;
-};
-
-class ILogWriter
-{
-public:
-   virtual bool log(const std::string& /*trace*/) { return true; }
-   virtual void setLogFile(const std::string& /*logFile*/) {}
-   virtual bool clearLog() { return true; }
-   virtual ~ILogWriter() {}
-};
-
-class LogWriterFactory
-{
-public:
-   static ILogWriter* createLogWriter(enLogWriterType writerType);
 };
 
 }
