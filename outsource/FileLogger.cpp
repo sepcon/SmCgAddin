@@ -2,10 +2,7 @@
 ///SDS_LOGGER
 
 #include <map>
-#include <string>
-
-
-std::map<unsigned int, std::string> gFunctionMap;
+#include <cstdlib>
 
 static bool executeCommand(const std::string& cmd)
 {
@@ -14,6 +11,14 @@ static bool executeCommand(const std::string& cmd)
 
 namespace sds {
 namespace adapter {
+namespace logging {
+
+enum enLogWriterType
+{
+   enLWT_SystemEcho,
+   enLWT_FileStream,
+   enLWT_Null
+};
 
 class ILogWriter
 {
@@ -34,29 +39,29 @@ public:
 clStartupLogger &clStartupLogger::getInstance()
 {
 //   "/opt/bosch/sds/bin/sds_adapter.log"
-   static clStartupLogger sInstance("hello.log");
+   static clStartupLogger sInstance("sds_adapter.log");
    return sInstance;
 }
 
-#define INSERT_OPERATOR_DEF(master, type)\
-   master &master::operator<<(type value) \
-   { \
-      _traceCreator << " " <<  value; \
-      return *this; \
-   }
-INSERT_OPERATOR_DEF(clStartupLogger, double)
-INSERT_OPERATOR_DEF(clStartupLogger, const std::string &)
-INSERT_OPERATOR_DEF(clStartupLogger, const char*)
-INSERT_OPERATOR_DEF(clStartupLogger, int)
-INSERT_OPERATOR_DEF(clStartupLogger, unsigned long)
-INSERT_OPERATOR_DEF(clStartupLogger, char)
-//for trigger writing log to destination output
-clStartupLogger& clStartupLogger::operator <<(bool b)
+clStartupLogger &clStartupLogger::operator<<(double value) { return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(long double value){ return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(float value){ return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(const std::string &value){ return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(const char *value) { return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(long value) { return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(unsigned long value) { return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(char value) { return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(bool value) { const char* strValue = value ? "TRUE" : "FALSE"; return addToTrace(strValue);}
+clStartupLogger &clStartupLogger::operator<<(short value){ return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(unsigned short value){ return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(int value){ return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(unsigned int value){ return addToTrace(value);}
+clStartupLogger &clStartupLogger::operator<<(const clStartupLogger::LoggerManipulatorType &/*value*/)
 {
-   if(b) { writeLog(); }
-
+   writeLog();
    return *this;
 }
+
 
 
 
@@ -68,6 +73,12 @@ clStartupLogger::clStartupLogger(const std::string &logFile) : _logFile(logFile)
    _logWriter->clearLog();
 }
 
+template<typename T>
+clStartupLogger &clStartupLogger::addToTrace(T value)
+{
+   _traceCreator << value ;
+   return *this;
+}
 void clStartupLogger::writeLog()
 {
    _logWriter->log(_traceCreator.str());
@@ -75,18 +86,6 @@ void clStartupLogger::writeLog()
    _traceCreator.clear();
 }
 
-std::string getFunctionName(unsigned int functionCode)
-{
-   std::map<unsigned int, std::string>::iterator it = gFunctionMap.find(functionCode);
-   if(it != gFunctionMap.end())
-   {
-      return it->second;
-   }
-   else
-   {
-      return "NOT A FUNCTION";
-   }
-}
 
 
 
@@ -94,7 +93,7 @@ std::string getFunctionName(unsigned int functionCode)
 class SystemEchoLogWriter : public ILogWriter
 {
 
-#define APPEND_TO_FILE_CMD(file, trace) "echo " + trace + " >> " + file
+#define APPEND_TO_FILE_CMD(file, trace) "echo '" + trace + "' >> " + file
 public:
    SystemEchoLogWriter();
    bool log(const std::string& trace);
@@ -189,9 +188,8 @@ ILogWriter *LogWriterFactory::createLogWriter(enLogWriterType writerType)
    return pWriter;
 }
 
-}
-}
-
+//util function using for map functionID with function name
+std::map<unsigned int, std::string> gFunctionMap;
 std::string getFunctionName(unsigned int funcCode)
 {
    if(gFunctionMap.empty())
@@ -329,3 +327,7 @@ std::string getFunctionName(unsigned int funcCode)
       return "INVALID_FUNCTIONID";
    }
 }
+
+} //logging
+} //adapter
+} //sds

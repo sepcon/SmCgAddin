@@ -2,61 +2,71 @@
 #define FILELOGGER_H
 
 //logging incase early startup, TTFIS hasn't connected to target yet
-#include <cstdlib>
 #include <sstream>
 #include <string>
 
 #ifdef STARTUP_TRACES_ENABLE
-#define SDS_LOGGER() (sds::adapter::clStartupLogger::getInstance() << (__func__))
-#define SDS_CCA_FUNC_NAME(funcCode) (sds::adapter::clStartupLogger::getInstance().getFunctionName(funcCode))
-#define SDS_ENDLOG true
-#define ENDLOG SDS_ENDLOG
+class clStartupLogger;
+#define SDS_LOG(trace) \
+   ((sds::adapter::logging::clStartupLogger::getInstance() \
+   << "<<FILE: " << __FILE__ << ">>" \
+   << "<<LINE: " << __LINE__ << ">>" \
+   << "<<FUNC: "  <<__FUNCTION__ << ">>:: ") \
+   << trace << SDS_ENDLOG)
+#define SDS_ENDLOG sds::adapter::logging::clStartupLogger::getInstance()
+#define SDS_CCA_FUNC_NAME(funcID) (sds::adapter::logging::getFunctionName(funcID))
 #else
-#define SDS_LOGGER()
-#define SDS_CCA_FUNC_NAME(funcCode)
+#define SDS_LOG(trace)
 #define SDS_ENDLOG
-#define ENDLOG SDS_ENDLOG
+#define SDS_CCA_FUNC_NAME(funcID)
 #endif //STARTUP_TRACES_ENABLE
 
 namespace sds {
 namespace adapter {
+namespace logging {
+
+//need to move to other file accordingly
+std::string getFunctionName(unsigned int funcID);
 
 class ILogWriter;
-class LogWriterFactory;
-enum enLogWriterType
-{
-   enLWT_SystemEcho,
-   enLWT_FileStream,
-   enLWT_Null
-};
-
-std::string getFunctionName(unsigned int funcCode);
 class clStartupLogger
 {
 public:
+   typedef clStartupLogger LoggerManipulatorType ;
    static clStartupLogger& getInstance();
    void setLogFile(const std::string& logFile);
 
-   #define INSERT_OPERATOR_DCL(master, type) master& operator<<(type value);
-   INSERT_OPERATOR_DCL(clStartupLogger, double)
-   INSERT_OPERATOR_DCL(clStartupLogger, const std::string&)
-   INSERT_OPERATOR_DCL(clStartupLogger, const char*)
-   INSERT_OPERATOR_DCL(clStartupLogger, int)
-   INSERT_OPERATOR_DCL(clStartupLogger, unsigned long)
-   INSERT_OPERATOR_DCL(clStartupLogger, char)
-   INSERT_OPERATOR_DCL(clStartupLogger, bool)
-   void writeLog();
+   clStartupLogger& operator<<(double value);
+   clStartupLogger& operator<<(long double value);
+   clStartupLogger& operator<<(float value);
+   clStartupLogger& operator<<(const std::string& value);
+   clStartupLogger& operator<<(const char* value);
+   clStartupLogger& operator<<(long value);
+   clStartupLogger& operator<<(unsigned long value);
+   clStartupLogger& operator<<(bool value);
+   clStartupLogger& operator<<(short value);
+   clStartupLogger& operator<<(unsigned short value);
+   clStartupLogger& operator<<(int value);
+   clStartupLogger& operator<<(unsigned int value);
+   clStartupLogger& operator<<(char value);
+   clStartupLogger& operator<<(const LoggerManipulatorType &value);
+
 
 
 protected:
-   clStartupLogger(const std::string& logFile = "/sdslog.log");
+   clStartupLogger(const std::string& logFile);
+   void writeLog();
+   template<typename T>
+   clStartupLogger& addToTrace(T value);
+
    std::string _logFile;
    ILogWriter* _logWriter;
    std::ostringstream _traceCreator;
 };
 
-}
-}
+} //logging
+} //adapter
+} //sds
 
 
 #endif // FILELOGGER_H
