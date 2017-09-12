@@ -7,8 +7,8 @@
 #include <string>
 
 #ifdef STARTUP_TRACES_ENABLE
-#define SDS_LOGGER() (clStartupLogger::getInstance() << __func__)
-#define SDS_CCA_FUNC_NAME(funcCode) (clStartupLogger::getInstance().getFunctionName(funcCode))
+#define SDS_LOGGER() (sds::adapter::clStartupLogger::getInstance() << (__func__))
+#define SDS_CCA_FUNC_NAME(funcCode) (sds::adapter::clStartupLogger::getInstance().getFunctionName(funcCode))
 #define SDS_ENDLOG true
 #define ENDLOG SDS_ENDLOG
 #else
@@ -39,6 +39,7 @@ public:
    #define INSERT_OPERATOR_DCL(master, type) master& operator<<(type value);
    INSERT_OPERATOR_DCL(clStartupLogger, double)
    INSERT_OPERATOR_DCL(clStartupLogger, const std::string&)
+   INSERT_OPERATOR_DCL(clStartupLogger, const char*)
    INSERT_OPERATOR_DCL(clStartupLogger, int)
    INSERT_OPERATOR_DCL(clStartupLogger, unsigned long)
    INSERT_OPERATOR_DCL(clStartupLogger, char)

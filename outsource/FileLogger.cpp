@@ -4,12 +4,8 @@
 #include <map>
 #include <string>
 
-#define INSERT_OPERATOR_DEF(master, type)\
-   master &master::operator<<(type value) \
-   { \
-      _traceCreator << " " <<  value; \
-      return *this; \
-   }
+
+std::map<unsigned int, std::string> gFunctionMap;
 
 static bool executeCommand(const std::string& cmd)
 {
@@ -20,16 +16,23 @@ namespace sds {
 namespace adapter {
 
 
-std::map<unsigned int, std::string> gFunctionMap;
 
 clStartupLogger &clStartupLogger::getInstance()
 {
+//   "/opt/bosch/sds/bin/sds_adapter.log"
    static clStartupLogger sInstance("hello.log");
    return sInstance;
 }
 
+#define INSERT_OPERATOR_DEF(master, type)\
+   master &master::operator<<(type value) \
+   { \
+      _traceCreator << " " <<  value; \
+      return *this; \
+   }
 INSERT_OPERATOR_DEF(clStartupLogger, double)
 INSERT_OPERATOR_DEF(clStartupLogger, const std::string &)
+INSERT_OPERATOR_DEF(clStartupLogger, const char*)
 INSERT_OPERATOR_DEF(clStartupLogger, int)
 INSERT_OPERATOR_DEF(clStartupLogger, unsigned long)
 INSERT_OPERATOR_DEF(clStartupLogger, char)
@@ -37,6 +40,8 @@ INSERT_OPERATOR_DEF(clStartupLogger, char)
 clStartupLogger& clStartupLogger::operator <<(bool b)
 {
    if(b) { writeLog(); }
+
+   return *this;
 }
 
 
@@ -193,29 +198,6 @@ std::string getFunctionName(unsigned int functionCode)
 }
 
 
-class SystemEchoLogWriter;
-class StreamFileWriter;
-ILogWriter *LogWriterFactory::createLogWriter(enLogWriterType writerType)
-{
-   ILogWriter pWriter = 0;
-
-   switch (writerType) {
-   case enLWT_SystemEcho:
-      pWriter = new SystemEchoLogWriter;
-      break;
-
-   case enLWT_SystemEcho:
-      pWriter = new StreamFileWriter;
-      break;
-
-   case enLWT_Null:
-   default:
-      pWriter = new NoOutputLogWirter;
-      break;
-   }
-
-   return pWriter;
-}
 
 /// START - Declaration: Private classes for log writing
 
@@ -223,7 +205,7 @@ ILogWriter *LogWriterFactory::createLogWriter(enLogWriterType writerType)
 class SystemEchoLogWriter : public ILogWriter
 {
 
-#define APPEND_TO_FILE_CMD(trace, file) "echo " + trace + " >> " + file
+#define APPEND_TO_FILE_CMD(file, trace) "echo " + trace + " >> " + file
 public:
    SystemEchoLogWriter();
    bool log(const std::string& trace);
@@ -246,7 +228,7 @@ public:
    //tbd
 };
 
-class NoOutputLogWirter
+class NoOutputLogWirter : public ILogWriter
 {
 public:
    bool log(const std::string& /*trace*/) { return true; }
@@ -266,6 +248,11 @@ bool SystemEchoLogWriter::log(const std::string &trace)
    {
       std::string command = APPEND_TO_FILE_CMD(_file, trace);
       system(command.c_str());
+      return true;
+   }
+   else
+   {
+      return false;
    }
 }
 
@@ -283,11 +270,35 @@ bool SystemEchoLogWriter::clearLog()
 {
    if(_isFileWritable)
    {
-      std::string cmd = "echo > " + logFile;
+      std::string cmd = "echo > " + _file;
       executeCommand(cmd);
    }
+   return true;
 }
 /// END - DEFINITION: Private classes for log writing
+
+
+ILogWriter *LogWriterFactory::createLogWriter(enLogWriterType writerType)
+{
+   ILogWriter* pWriter = 0;
+
+   switch (writerType) {
+   case enLWT_SystemEcho:
+      pWriter = new SystemEchoLogWriter;
+      break;
+
+   case enLWT_FileStream:
+      pWriter = new StreamFileWriter;
+      break;
+
+   case enLWT_Null:
+   default:
+      pWriter = new NoOutputLogWirter;
+      break;
+   }
+
+   return pWriter;
+}
 
 }
 }
