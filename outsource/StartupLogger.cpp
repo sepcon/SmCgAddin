@@ -1,6 +1,5 @@
-#include "FileLogger.h"
-///SDS_LOGGER
 
+#include "StartupLogger.h"
 #include <map>
 #include <cstdlib>
 
@@ -56,9 +55,12 @@ clStartupLogger &clStartupLogger::operator<<(short value){ return addToTrace(val
 clStartupLogger &clStartupLogger::operator<<(unsigned short value){ return addToTrace(value);}
 clStartupLogger &clStartupLogger::operator<<(int value){ return addToTrace(value);}
 clStartupLogger &clStartupLogger::operator<<(unsigned int value){ return addToTrace(value);}
-clStartupLogger &clStartupLogger::operator<<(const clStartupLogger::LoggerManipulatorType &/*value*/)
+clStartupLogger &clStartupLogger::operator<<(clStartupLogger::EnManipulatorType value)
 {
-   writeLog();
+   if(enManipEND == value)
+   {
+      writeLog();
+   }
    return *this;
 }
 

@@ -1,23 +1,26 @@
-#ifndef FILELOGGER_H
-#define FILELOGGER_H
+#ifndef STARTUPLOGGER_H
+#define STARTUPLOGGER_H
 
 //logging incase early startup, TTFIS hasn't connected to target yet
 #include <sstream>
 #include <string>
 
+//#define STARTUP_TRACES_ENABLE
 #ifdef STARTUP_TRACES_ENABLE
 class clStartupLogger;
-#define SDS_LOG(trace) \
+#define STARTUP_LOG(trace) \
    ((sds::adapter::logging::clStartupLogger::getInstance() \
    << "<<FILE: " << __FILE__ << ">>" \
    << "<<LINE: " << __LINE__ << ">>" \
    << "<<FUNC: "  <<__FUNCTION__ << ">>:: ") \
-   << trace << SDS_ENDLOG)
-#define SDS_ENDLOG sds::adapter::logging::clStartupLogger::getInstance()
+   << trace \
+   << ST_ENDLOG \
+   )
+#define ST_ENDLOG sds::adapter::logging::clStartupLogger::enManipEND
 #define SDS_CCA_FUNC_NAME(funcID) (sds::adapter::logging::getFunctionName(funcID))
 #else
-#define SDS_LOG(trace)
-#define SDS_ENDLOG
+#define STARTUP_LOG(trace)
+#define ST_ENDLOG
 #define SDS_CCA_FUNC_NAME(funcID)
 #endif //STARTUP_TRACES_ENABLE
 
@@ -32,7 +35,17 @@ class ILogWriter;
 class clStartupLogger
 {
 public:
-   typedef clStartupLogger LoggerManipulatorType ;
+   typedef clStartupLogger LoggerEnManipulatorTypeType ;
+
+
+   enum EnManipulatorType
+   {
+      enManipEND,
+      enManipNone
+   };
+
+
+
    static clStartupLogger& getInstance();
    void setLogFile(const std::string& logFile);
 
@@ -49,8 +62,7 @@ public:
    clStartupLogger& operator<<(int value);
    clStartupLogger& operator<<(unsigned int value);
    clStartupLogger& operator<<(char value);
-   clStartupLogger& operator<<(const LoggerManipulatorType &value);
-
+   clStartupLogger& operator<<(EnManipulatorType value);
 
 
 protected:
@@ -69,4 +81,4 @@ protected:
 } //sds
 
 
-#endif // FILELOGGER_H
+#endif // STARTUPLOGGER_H
