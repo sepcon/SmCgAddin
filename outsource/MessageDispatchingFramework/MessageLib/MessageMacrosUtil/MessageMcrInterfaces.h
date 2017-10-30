@@ -1,4 +1,4 @@
-#include "MessageMacrosPrv.h"
+#include "MsgMacros.h"
 #include "Core/Message.h"
 
 //-->NON INCLUDE GUARD SECTION<--

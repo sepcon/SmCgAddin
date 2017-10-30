@@ -45,7 +45,8 @@
       MessageClassName(MSG_DEF_SET_FUNC_PARAMS_(__VA_ARGS__)) \
          : MSG_DEF_CONSTRUCTOR_INITIALIZE_LIST_(__VA_ARGS__) {} \
       \
-      virtual unsigned int type() { return CONCAT_(ENUM_VALUE_PREFIX_, MessageClassName); } \
+      unsigned int type() { return CONCAT_(ENUM_VALUE_PREFIX_, MessageClassName); } \
+      const char* className() { return #MessageClassName; } \
       \
       void getData( MSG_DEF_GET_FUNC_PARAMS_(__VA_ARGS__)) const \
       { \
@@ -59,7 +60,8 @@
    { \
      public: \
       MessageClassName() {} \
-      virtual unsigned int type() { return CONCAT_(ENUM_VALUE_PREFIX_, MessageClassName); } \
+      unsigned int type() { return CONCAT_(ENUM_VALUE_PREFIX_, MessageClassName); } \
+      const char* className() { return #MessageClassName; } \
    };
 
 

@@ -17,14 +17,14 @@ HEADERS += \
     MessageLib/Util/CommonLogger.h \
     MessageLib/Core/Message.h \
     MessageLib/Core/MessageHandler.h \
-    MessageLib/MessageMacrosUtil/MessageHandlerMacros.h \
-    MessageLib/MessageMacrosUtil/MessageMacros.h \
-    MessageLib/MessageMacrosUtil/MessageMacrosPrv.h \
     MessageLib/Util/MacrosUtils.h \
     MessagesAll.h \
     MessageTypesDefines.h \
     MessageLib/Core/MessageDispatcher.h \
-    MessageLib/Util/Pointer.h
+    MessageLib/Util/Pointer.h \
+    MessageLib/MessageMacrosUtil/MsgHandlerMcrInterfaces.h \
+    MessageLib/MessageMacrosUtil/MessageMcrInterfaces.h \
+    MessageLib/MessageMacrosUtil/MsgMacros.h
 
 INCLUDEPATH += MessageLib
 

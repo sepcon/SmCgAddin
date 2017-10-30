@@ -1,6 +1,6 @@
 //Don't allow include guard for this file
 
-#include "MessageMacrosUtil/MessageMacros.h"
+#include "MessageMacrosUtil/MessageMcrInterfaces.h"
 #include <memory>
 #include <vector>
 #include "Util/Pointer.h"

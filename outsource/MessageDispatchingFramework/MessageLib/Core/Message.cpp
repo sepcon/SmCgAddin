@@ -7,8 +7,7 @@ namespace MsgLib
 
 void Message::post()
 {
-
-   MessageDispatcher::getInstance()->postMessageToHandlers(this);
+   MessageDispatcher::getInstance()->dispatch(this);
 }
 
 }

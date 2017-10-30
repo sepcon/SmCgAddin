@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "MessageMacrosUtil/MessageHandlerMacros.h"
+#include "MessageMacrosUtil/MsgHandlerMcrInterfaces.h"
 //#include "MessageHandler.h"
 #include "MessagesAll.h"
 
@@ -116,7 +116,7 @@ public:
 int main()
 {
    MessageCreator mc;
-   std::shared_ptr<HelloWorldMessageHandler> pH(new HelloWorldMessageHandler);
+//   std::shared_ptr<HelloWorldMessageHandler> pH(new HelloWorldMessageHandler);
    mc.sendMessage();
    return 0;
 }

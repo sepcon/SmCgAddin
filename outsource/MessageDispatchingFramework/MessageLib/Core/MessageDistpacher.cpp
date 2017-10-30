@@ -12,7 +12,7 @@ MessageDispatcher *MessageDispatcher::getInstance()
    return &sMsgRouter;
 }
 
-void MessageDispatcher::registerMessageHandler(MessageHandler *handler, unsigned int messageType)
+void MessageDispatcher::registerHandler(MessageHandler *handler, unsigned int messageType)
 {
    if(!handler)
    {
@@ -20,12 +20,12 @@ void MessageDispatcher::registerMessageHandler(MessageHandler *handler, unsigned
    }
    else
    {
-      MSG_LOG(handler->handlerName() << " registers to handle message: " << messageType);
+      MSG_LOG(handler->className() << " REGISTERS TO HANDLE MESSAGE: " << messageType);
       _handlersMap[messageType].push_back(handler);
    }
 }
 
-void MessageDispatcher::unregisterMessageHandler(MessageHandler *handler, unsigned int messageType)
+void MessageDispatcher::unregisterHandler(MessageHandler *handler, unsigned int messageType)
 {
    MapOfMessageHandler::iterator it = _handlersMap.find(messageType);
    if(it != _handlersMap.end())
@@ -35,16 +35,16 @@ void MessageDispatcher::unregisterMessageHandler(MessageHandler *handler, unsign
    }
    else
    {
-      MSG_ERROR("THERE'S NO HANDLER NAME: " << handler->handlerName() << " register for handling message type: " << messageType);
+      MSG_ERROR("THERE'S NO HANDLER NAME: " << handler->className() << " REGISTER FOR HANDLING MESSAGE TYPE: " << messageType);
    }
 }
 
-void MessageDispatcher::postMessageToHandlers(Message *msg)
+void MessageDispatcher::dispatch(Message *msg)
 {
    std::vector<MessageHandler* >& handlerList = _handlersMap[msg->type()];
    if(handlerList.empty())
    {
-      MSG_ERROR("ERROR: there's no handler for Message Type: " << msg->type());
+      MSG_WARN("ERROR: THERE'S NO HANDLER FOR MESSAGE " << msg->className() << " -- TYPE " << msg->type());
    }
    else
    {

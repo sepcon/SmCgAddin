@@ -8,10 +8,12 @@
  * E.g: MSG_LOG("The output Message's value is: " << 100);
  * */
 #define MSG_LOG(msg) CONSOLE_WRITE(std::cout, msg)
+#define MSG_WARN(msg) CONSOLE_WRITE(std::cerr, msg)
 #define MSG_ERROR(msg) CONSOLE_WRITE(std::cerr, msg)
 #define CONSOLE_WRITE(output, msg) output << msg << " --> FILE: " << __FILE__ << " -- LINE: " << __LINE__ << " -- FUNCTION: " << __PRETTY_FUNCTION__ << ": " << std::endl
 #else
 #define MSG_LOG(msg)
+#define MSG_WARN(msg)
 #define MSG_ERROR(msg)
 #endif
 

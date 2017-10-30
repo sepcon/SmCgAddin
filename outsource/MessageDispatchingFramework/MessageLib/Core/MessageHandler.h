@@ -13,7 +13,7 @@ public:
    void registerToMessage(unsigned int msgType);
    void unregisterToMessage(unsigned int msgType);
    void handle(Message* msg);
-   virtual const char* handlerName() { return "MessageHandler"; }
+   virtual const char* className() { return "MessageHandler"; }
 
    virtual ~MessageHandler();
 

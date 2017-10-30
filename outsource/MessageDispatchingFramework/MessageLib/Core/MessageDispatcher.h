@@ -17,9 +17,9 @@ public:
 
 private:
    static MessageDispatcher* getInstance();
-   void registerMessageHandler(MessageHandler* handler, unsigned int messageType);
-   void unregisterMessageHandler(MessageHandler* handler, unsigned int messageType);
-   void postMessageToHandlers(Message* msg);
+   void registerHandler(MessageHandler* handler, unsigned int messageType);
+   void unregisterHandler(MessageHandler* handler, unsigned int messageType);
+   void dispatch(Message* msg);
    MessageDispatcher(){}
 
    MapOfMessageHandler _handlersMap;

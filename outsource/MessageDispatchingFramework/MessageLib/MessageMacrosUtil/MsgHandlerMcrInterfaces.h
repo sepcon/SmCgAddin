@@ -2,7 +2,7 @@
 #define MESSAGEHANDLERMACROS_H
 
 #include "Core/MessageHandler.h"
-#include "MessageMacros.h"
+#include "MessageMcrInterfaces.h"
 
 
 #define REGISTER_HANDLING_MESSAGE(MessageClassName) \
@@ -10,7 +10,7 @@
 
 #define HANDLE_MESSAGE_START(MessageClassName) \
    public: \
-   const char* handlerName() { return #MessageClassName; } \
+   const char* className() { return #MessageClassName; } \
    protected: \
    void handleMessage(MsgLib::Message* msgPtr)  \
    { \
