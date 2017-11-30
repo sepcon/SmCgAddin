@@ -22,6 +22,10 @@ void MessageHandler::registerToMessage(unsigned int msgType)
    }
 }
 
+/**
+ * After calling this function, MessageHandler will no longer handle the message with type msgType
+ * @param msgType: type of message
+ */
 void MessageHandler::unregisterToMessage(unsigned int msgType)
 {
    _registeredMessgeTypes.erase(
@@ -30,6 +34,10 @@ void MessageHandler::unregisterToMessage(unsigned int msgType)
    MessageDispatcher::getInstance()->unregisterHandler(this, msgType);
 }
 
+/**
+ * Delegate handling message to subclass
+ * @param msg
+ */
 void MessageHandler::handle(Message *msg)
 {
    if(!msg)

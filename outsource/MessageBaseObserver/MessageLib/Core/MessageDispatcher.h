@@ -4,6 +4,8 @@
 #include <map>
 #include <vector>
 
+#include "MessageHandler.h"
+
 namespace MsgLib
 {
 class MessageHandler;

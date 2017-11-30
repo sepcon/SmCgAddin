@@ -113,11 +113,19 @@ public:
 
 };
 
+#include <unistd.h>
+
 int main()
 {
    MessageCreator mc;
 //   std::shared_ptr<HelloWorldMessageHandler> pH(new HelloWorldMessageHandler);
    mc.sendMessage();
+   while(true)
+   {
+       mc.sendMessage();
+       sleep(1);
+   }
+   
    return 0;
 }
 
