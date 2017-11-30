@@ -7,6 +7,7 @@ import argparse
 QMAKE_FILE_EXTENSION = ".pro"
 QMAKE_FILE_TEMPLATE = 'TEMPLATE = app\nCONFIG += console c++11\nCONFIG -= app_bundle \nCONFIG -= qt\n\n\n'
 QMAKE_INCLUDEPATH_KEYWORD = "INCLUDEPATH += \\\n"
+QMAKE_MACROS_DEFINE_KEYWORD = "DEFINES += \\\n"
 QMAKE_SOURCE_KEYWORD = "SOURCES += \\\n"
 HEADER = "HEADERS += \\\n"
 
@@ -29,6 +30,7 @@ def getContainingDir(filePath):
 
 
 includePathsList = None
+macrosList = None
 cppFilesList = Set()
 headerFilesList = Set()
 
@@ -43,16 +45,17 @@ argParser.add_argument('-v', "--verbose", help = 'more details about output', ac
 args = argParser.parse_args()
 
 makefile = open(args.make_file_path, 'r')
-makeContent = makefile.readlines()
+# makefile = open("/home/sepcon/Documents/git/SmCgAddin/apphmi_sds-cgi3-rnaivi_out.gnumake", 'r')
+gnumakeContent = makefile.readlines()
 
 
-for line in makeContent:
+for line in gnumakeContent:
     cppMatch = re.search(r'\/[^%]+.cpp[\s]+\\', line)
     if cppMatch :
         cppFilesList.add(cppMatch.group() + "\n")
 
 
-for line in makeContent:
+for line in gnumakeContent:
     includeMatch = re.search(r'-I.*\/ ', line)
     if includeMatch:
         includeContent = includeMatch.group()
@@ -60,6 +63,13 @@ for line in makeContent:
         # includePathsList = Set(includePathsList)
         break
 
+for line in gnumakeContent:
+    macrosMatch = re.search(r'-D.* ', line)
+    if macrosMatch:
+        macrosContent = macrosMatch.group()
+        macrosList = macrosContent.replace("-D", "")
+        break
+        
 for cppFile in cppFilesList:
     containingDir = getContainingDir(cppFile)
     headerFilesInSameDir = glob.glob(containingDir + "/*.h")
@@ -71,6 +81,15 @@ makefile.close()
 qmakeFilePath = args.qmake_out_dir + '/' + getFileNameFromPath(args.make_file_path) + '.pro'
 qmakeFile = open( qmakeFilePath, 'w')
 qmakeFile.write(QMAKE_FILE_TEMPLATE);
+
+
+####################################################################################################################
+# #################################Write DEFINES Section#######################################################
+####################################################################################################################
+if macrosList :
+    qmakeFile.write(QMAKE_MACROS_DEFINE_KEYWORD )
+    qmakeFile.write(macrosList)
+    qmakeFile.write("\n\n")
 
 ####################################################################################################################
 # #################################Write Include Path Section#######################################################
