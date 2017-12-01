@@ -1,9 +1,10 @@
 import re
-from pkg_resources._vendor.pyparsing import line
+#from pkg_resources._vendor.pyparsing import line
 from sets import Set
 import sys
 import glob
 import argparse
+import os
 
 makeFileTemplate = '''
 CC            = gcc
@@ -50,6 +51,7 @@ def getContainingDir(filePath):
 includePathsList = None
 cppFilesList = Set()
 headerFilesList = Set()
+objectFilesList = ""
 
 argParser = argparse.ArgumentParser('python qmake_from_make.py',
                                     description = '\n\n\tSimply conversion from makefile to qmake file for investigating source code with qtcreator')
@@ -75,10 +77,12 @@ objectsList = ""
 compileRules = ""
 includePaths = ""
 
+
 for cppFile in cppFilesList:
     start = cppFile.rfind("/") + 1
     end = len(cppFile) - 3
     objectFile = cppFile[ start : end] + "o"
+    objectFilesList += " " + objectFile
     objectsList += objectFile + " \\\n\t\t"
     compileRules += objectFile + ": " + cppFile + "\n\n"
 
@@ -97,6 +101,8 @@ qmakeFilePath = args.out_dir + '/' + "Makefile"
 qmakeFile = open( qmakeFilePath, 'w')
 qmakeFile.write(outputMakeFile);
 
+
+os.system("cd " + args.out_dir + "; touch Nothing " + objectFilesList)
 
 qmakeFile.close()
 if args.verbose:
