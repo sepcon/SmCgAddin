@@ -1,131 +1,115 @@
 #include <iostream>
 
-#include "MessageMacrosUtil/MsgHandlerMcrInterfaces.h"
+#include "Macros/MessageHandlerInterfaces.h"
 //#include "MessageHandler.h"
-#include "MessagesAll.h"
+#include "ProducerMessages.h"
+#include "ConsummerMessages.h"
+#include <unistd.h>
 
 using namespace std;
-using namespace ::MyMessage;
+using namespace ::Producer;
+using namespace ::Consummer;
 
 
-class MessageCreator
+static class MessageCreator : MsgLib::MessageHandler
 {
 public:
-   void sendMessage()
+   MessageCreator()
+   {
+      REGISTER_HANDLING_MESSAGE(::Consummer::MsgHandlingProduct);
+   }
+   void createProducts()
    {
       std::cout << "SENDDING NEW SERIES OF MESSAGES" << std::endl;
-      int i = 0;
-      VectorOfChange p;
-      std::vector<int> vec = {1, 2, 3, 4, 5};
-      POST_MESSAGE(HelloWorldMessage);
-      POST_MESSAGE(HelloWorldWithOnePersonMessage, "Noel");
-      POST_MESSAGE(HelloWorldWithTwoParams, "Noel", "Child");
-      POST_MESSAGE(HelloWorldWithThreeParams, 1, "Noel", 100.0);
-      POST_MESSAGE(VectorOfChange, vec);
-      POST_MESSAGE(PointerChange, &vec);
-      POST_MESSAGE(OtherMessageChange, &p);
-      POST_MESSAGE(TenParamMessage, &i, 1, 2,3,4,5,6,7,8,9);
-      POST_MESSAGE(HelloWorldWithOnePersonMessage, "nguyen van con");
-   }
-};
 
-class HelloWorldMessageHandler : public MsgLib::MessageHandler
-{
-public:
-   HelloWorldMessageHandler()
-   {
-      REGISTER_HANDLING_MESSAGE(HelloWorldMessage);
-      REGISTER_HANDLING_MESSAGE(HelloWorldWithOnePersonMessage);
-      REGISTER_HANDLING_MESSAGE(HelloWorldWithThreeParams);
-      REGISTER_HANDLING_MESSAGE(VectorOfChange);
-      REGISTER_HANDLING_MESSAGE(OtherMessageChange);
-      REGISTER_HANDLING_MESSAGE(TenParamMessage);
-   }
-
-   void handleMessage(TenParamMessage* msg)
-   {
-      Pointer<int> pa1;
-      int a2;
-      int a3;
-      int a4;
-      int a5;
-      int a6;
-      int a7;
-      int a8;
-      int a9;
-      int a10;
-      GET_MESSAGE_DATA_KNOWN_TYPE(msg, pa1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
-      if(pa1)
+      for(int i = 0; i < 10; ++i)
       {
-         cout << *pa1 << a2 << a3 << a4 << a5 << a6 << a7 << a8 << a9 << a10 << endl;
+         _vec.push_back(i);
       }
-   }
-   void handleMessage(HelloWorldMessage* /*msg*/)
-   {
-      cout << "hello world" << endl;
+
+      MsgLib::Message* msg = new MsgProductsCreated(makeRef(_vec));
+      msg->post();
+//      POST_MESSAGE(MsgProductsCreated, MsgLib::Pointer<std::vector<int> >(&_vec));
    }
 
-   void handleMessage(HelloWorldWithOnePersonMessage* msg)
+   void handleMessage(MsgHandlingProduct* msg)
    {
-      std::string name;
-      GET_MESSAGE_DATA_KNOWN_TYPE(msg, name);
-      cout << "HELLO " << name << endl;
-   }
-   void handleMessage(HelloWorldWithThreeParams *msg)
-   {
-      int id;
-      double value;
-      std::string name;
-      GET_MESSAGE_DATA_KNOWN_TYPE(msg, id, name, value);
-      cout << "HELLO " << name << " WITH ID: " << id << " VALUE = " << value << endl;
-   }
-
-   void handleMessage(VectorOfChange* msg)
-   {
-      std::vector<int> vec;
-      GET_MESSAGE_DATA_KNOWN_TYPE(msg, vec);
+      int product;
+//      msg->getData(product);
+      GET_MESSAGE_DATA_KNOWN_TYPE(msg, product)
+      GET_MESSAGE_DATA(msg, MsgHandlingProduct, product)
+      for(auto it = _vec.begin(); it != _vec.end(); ++it)
       {
-         for(size_t i = 0; i < vec.size(); ++i)
+         if(*it == product)
          {
-            cout << (vec)[i] << endl;
+            cout << "PRODUCER --------------- remove handled product: " << *it << endl;
+            _vec.erase(it);
+            break;
          }
       }
-   }
-
-   void handleMessage(OtherMessageChange* msg)
-   {
-      Pointer<MsgLib::Message> p;
-      GET_MESSAGE_DATA_KNOWN_TYPE(msg, p);
-      if(p)
+//      sleep(1);
+      if(_vec.empty())
       {
-         cout << "Message " << p->type() << " changed!" << endl;
+//         sleep(2);
+         createProducts();
       }
    }
-
-   HANDLE_MESSAGE_START(HelloWorldMessageHandler)
-   HANDLE_MESSAGE(HelloWorldMessage)
-   HANDLE_MESSAGE(HelloWorldWithOnePersonMessage)
-   HANDLE_MESSAGE(HelloWorldWithThreeParams)
-   HANDLE_MESSAGE(VectorOfChange)
-   HANDLE_MESSAGE(OtherMessageChange)
-   HANDLE_MESSAGE(TenParamMessage)
+   HANDLE_MESSAGE_START(MessageCreator)
+   HANDLE_MESSAGE(MsgHandlingProduct)
    HANDLE_MESSAGE_END
 
+
+   private:
+      std::vector<int> _vec;
+} gMsgCreator;
+
+#include <signal.h>
+void handleSigKill(int sig)
+{
+   if(SIGUSR1 == sig)
+   {
+      gMsgCreator.createProducts();
+   }
+}
+class ProductConsummer : public MsgLib::MessageHandler
+{
+public:
+   ProductConsummer()
+   {
+//      REGISTER_HANDLING_MESSAGE(MsgProductsCreated);
+      REGISTER_HANDLING_MESSAGE(Producer::MsgProductsCreated);
+   }
+
+   HANDLE_MESSAGE_START(ProductConsummer)
+   HANDLE_MESSAGE(MsgProductsCreated)
+   HANDLE_MESSAGE_END
+
+   void handleMessage(MsgProductsCreated* msg)
+   {
+      Reference<std::vector<int> > pProducts;
+
+      msg->getData(pProducts);
+
+//      if(pProducts)
+//      {
+         cout << "GET PRODUCTS: " << endl;
+         while(!(*pProducts).empty())
+         {
+            cout << "CONSUMMER:----------------- handling product: " << (*pProducts).back() << endl;
+            sleep(1);
+            POST_MESSAGE(MsgHandlingProduct, (*pProducts).back());
+         }
+//      }
+   }
 };
 
-#include <unistd.h>
 
 int main()
 {
-   MessageCreator mc;
-//   std::shared_ptr<HelloWorldMessageHandler> pH(new HelloWorldMessageHandler);
-   mc.sendMessage();
-   while(true)
-   {
-       mc.sendMessage();
-       sleep(1);
-   }
-   
-   return 0;
+   signal(SIGUSR1, handleSigKill);
+   ProductConsummer consumer;
+   MsgListTenOfProducts ten;
+   cout << __cplusplus << endl;
+   while(true);
 }
 

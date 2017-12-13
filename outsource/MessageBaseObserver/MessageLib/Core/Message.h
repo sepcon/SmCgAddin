@@ -8,11 +8,10 @@ class Message
 {
 public:
    Message() {}
-   virtual ~Message() {}
-   virtual unsigned int type() = 0;
-   virtual const char* className() { return "Message"; }
+   virtual ~Message();
+   virtual const char* type() = 0;
    void post();
 };
-}
+} // namespace MsgLib
 
 #endif // MESSAGE_H

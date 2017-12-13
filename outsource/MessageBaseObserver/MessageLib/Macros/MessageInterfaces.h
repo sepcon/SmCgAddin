@@ -1,4 +1,7 @@
-#include "MsgMacros.h"
+#ifndef MESSAGEMACROS_H
+#define MESSAGEMACROS_H
+
+#include "MessageDefinition.h"
 #include "Core/Message.h"
 
 //-->NON INCLUDE GUARD SECTION<--
@@ -31,7 +34,7 @@
  * class MessageName1 {
  * public:
  *    MessageName1(const argType1& var_1, const argType2& var_2, ...) : _var_1(var_1), _var_2(var_2), ... {}
- *    unsigned int type() { return enMessageName1; )
+ *    const char* type() { return enMessageName1; )
  *    void getType(argType1& var_1, argType2& var_2, ...) { var_1 = _var_1; var_2 = _var_2; ...}
  *
  * private:
@@ -50,24 +53,22 @@
  * Declare new class message with type(enumtype) and list of data message conveys
  * E.g: DECLARE_MESSAGE(enListDataChanged, int, std::vector<std::string>)
  **/
-#define DECLARE_MESSAGE(MessageClassName, ...) DECLARE_MESSAGE_(MessageClassName, ##__VA_ARGS__)
+#define DECLARE_MESSAGE(MessageName, ...) DECLARE_MESSAGE_(MessageName, ##__VA_ARGS__)
 
 
 
 //<--NON INCLUDE GUARD SECTION-->
 
-#ifndef MESSAGEMACROS_H
-#define MESSAGEMACROS_H
 
 /***
-  * Create and post message with MessageClassName, and list of data that msg conveys
-  * [MessageClassName]: enum Message Type
+  * Create and post message with MessageName, and list of data that msg conveys
+  * [MessageName]: enum Message Type
   * [__VA_ARGS__]: list of data that msg conveys
   * E.g: std::vector<std::string> listData;
   * int listID = 1000;
   * POST_MESSAGE(enListDataChanged, listID, listData);
   **/
-#define POST_MESSAGE(MessageClassName, ...) MSG_DEF_POST_MESSAGE_(MessageClassName, ##__VA_ARGS__)
+#define POST_MESSAGE(MessageName, ...) MSG_DEF_POST_MESSAGE_(MessageName, ##__VA_ARGS__)
 /***
  * Get data from a known type message
  * CMS_enListDataChanged* msgPtr;
@@ -82,7 +83,7 @@
  * int listId; std::vector<std::string> listData;
  * E.g: GET_MESSAGE_DATA(msgPtr, enListDataChanged, listId, listData);
  **/
-#define GET_MESSAGE_DATA(msgPtr, MessageClassName, ...) MSG_DEF_GET_MESSAGE_DATA_(msgPtr, MessageClassName, ##__VA_ARGS__)
+#define GET_MESSAGE_DATA(msgPtr, MessageName, ...) MSG_DEF_GET_MESSAGE_DATA_(msgPtr, MessageName, ##__VA_ARGS__)
 
 
 #endif // MESSAGEMACROS_H

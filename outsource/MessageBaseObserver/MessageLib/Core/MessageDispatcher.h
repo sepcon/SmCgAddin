@@ -13,14 +13,15 @@ class Message;
 class MessageDispatcher
 {
 public:
-   typedef std::map<unsigned int, std::vector<MessageHandler*> > MapOfMessageHandler;
+   typedef  const char* MessageType;
+   typedef std::map<MessageType, std::vector<MessageHandler*> > MapOfMessageHandler;
    friend class MessageHandler;
    friend class Message;
 
 private:
    static MessageDispatcher* getInstance();
-   void registerHandler(MessageHandler* handler, unsigned int messageType);
-   void unregisterHandler(MessageHandler* handler, unsigned int messageType);
+   void registerHandler(MessageHandler* handler, MessageType messageType);
+   void unregisterHandler(MessageHandler* handler, MessageType messageType);
    void dispatch(Message* msg);
    MessageDispatcher(){}
 

@@ -45,11 +45,6 @@
         20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, \
         9,  8,  7,  6,  5,  4,  3,  2,  1,  0
 
-#if __cplusplus <= 199711L
-#define DOWN_CAST(SubType, parentPtr) ((SubType*) parentPtr)
-#else
-#define DOWN_CAST(SubType, parentPtr) (dynamic_cast<SubType*>(parentPtr))
-#endif
 
 
 #endif // MACROSUTILS_H

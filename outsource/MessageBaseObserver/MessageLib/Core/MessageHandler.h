@@ -10,8 +10,8 @@ class MessageHandler
 {
 public:
    MessageHandler();
-   void registerToMessage(unsigned int msgType);
-   void unregisterToMessage(unsigned int msgType);
+   void registerToMessage(const char* msgType);
+   void unregisterToMessage(const char* msgType);
    void handle(Message* msg);
    virtual const char* className() { return "MessageHandler"; }
 
@@ -21,8 +21,8 @@ protected:
    virtual void handleMessage(Message* msg) = 0;
 
 private:
-   std::vector<unsigned int> _registeredMessgeTypes;
+   std::vector<const char*> _registeredMessgeTypes;
 };
-}
+} // namespace MsgLib
 
 #endif // MESSAGEHANDLER_H

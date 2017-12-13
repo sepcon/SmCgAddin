@@ -12,7 +12,7 @@ MessageDispatcher *MessageDispatcher::getInstance()
    return &sMsgRouter;
 }
 
-void MessageDispatcher::registerHandler(MessageHandler *handler, unsigned int messageType)
+void MessageDispatcher::registerHandler(MessageHandler *handler, MessageType messageType)
 {
    if(!handler)
    {
@@ -25,7 +25,7 @@ void MessageDispatcher::registerHandler(MessageHandler *handler, unsigned int me
    }
 }
 
-void MessageDispatcher::unregisterHandler(MessageHandler *handler, unsigned int messageType)
+void MessageDispatcher::unregisterHandler(MessageHandler *handler, MessageType messageType)
 {
    MapOfMessageHandler::iterator it = _handlersMap.find(messageType);
    if(it != _handlersMap.end())
@@ -44,7 +44,7 @@ void MessageDispatcher::dispatch(Message *msg)
    std::vector<MessageHandler* >& handlerList = _handlersMap[msg->type()];
    if(handlerList.empty())
    {
-      MSG_WARN("ERROR: THERE'S NO HANDLER FOR MESSAGE " << msg->className() << " -- TYPE " << msg->type());
+      MSG_WARN("ERROR: THERE'S NO HANDLER FOR MESSAGE " << msg->type());
    }
    else
    {
@@ -55,4 +55,4 @@ void MessageDispatcher::dispatch(Message *msg)
    }
 }
 
-}
+} // namespace MsgLib

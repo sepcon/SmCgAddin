@@ -13,7 +13,7 @@ MessageHandler::MessageHandler()
 
 }
 
-void MessageHandler::registerToMessage(unsigned int msgType)
+void MessageHandler::registerToMessage(const char* msgType)
 {
    if(std::find(_registeredMessgeTypes.begin(), _registeredMessgeTypes.end(), msgType) == _registeredMessgeTypes.end())
    {
@@ -26,7 +26,7 @@ void MessageHandler::registerToMessage(unsigned int msgType)
  * After calling this function, MessageHandler will no longer handle the message with type msgType
  * @param msgType: type of message
  */
-void MessageHandler::unregisterToMessage(unsigned int msgType)
+void MessageHandler::unregisterToMessage(const char* msgType)
 {
    _registeredMessgeTypes.erase(
             std::remove(_registeredMessgeTypes.begin(), _registeredMessgeTypes.end(), msgType)

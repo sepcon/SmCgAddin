@@ -5,9 +5,13 @@
 namespace MsgLib
 {
 
+Message::~Message()
+{
+}
+
 void Message::post()
 {
    MessageDispatcher::getInstance()->dispatch(this);
 }
 
-}
+} // namespace MsgLib
